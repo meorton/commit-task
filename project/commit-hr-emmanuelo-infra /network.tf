@@ -17,12 +17,12 @@ resource "google_compute_subnetwork" "commit-subnet-infra" {
   secondary_ip_range {
     
     range_name    = "commit-subnet-infraip"
-    ip_cidr_range = "10.17.0.0/14"
+    ip_cidr_range = "10.16.1.0/14"
  }
 
      secondary_ip_range {
     range_name    = "commit-subnet-infrawork-secondaryip"
-    ip_cidr_range = "10.33.0.0/16"
+    ip_cidr_range = "10.32.1.0/16"
      }
 
   
