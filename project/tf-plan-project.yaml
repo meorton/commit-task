@@ -15,13 +15,13 @@ steps:
   args: 
   - '-c'
   - |
-          cd environments/${_ENV} 
+          cd projects/${_ENV} 
           ls -al
           env=${dir%*/}
           env=${_ENV}
           echo ""
           echo "*************** TERRAFORM INIT ******************"
-          echo "******* At environment: ${env} ********"
+          echo "******* At project: ${env} ********"
           echo "*************************************************"
           terraform init || exit 1
           cd ../../
@@ -34,12 +34,12 @@ steps:
   args: 
   - '-c'
   - | 
-          cd environments/${_ENV}  
+          cd projects/${_ENV}  
           env=${dir%*/}
           env=${_ENV}  
           echo ""
           echo "*************** TERRAFOM PLAN ******************"
-          echo "******* At environment: ${env} ********"
+          echo "******* At project: ${env} ********"
           echo "*************************************************"
           terraform plan || exit 1
           cd ../../ 
