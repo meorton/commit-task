@@ -40,7 +40,7 @@ resource "google_compute_global_address" "private_ip_range" {
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = google_compute_network.commit-network-data.self_link 
+  network       = google_compute_network.commit-network-infra.self_link 
   project       = var.project_id
 
   depends_on = [google_project_service.servicenetworking]
@@ -49,7 +49,7 @@ resource "google_compute_global_address" "private_ip_range" {
 
 # Create the VPC peering connection with the Service Networking API
 resource "google_service_networking_connection" "private_vpc_connection" {
-  network                 = google_compute_network.commit-network-data.self_link
+  network                 = google_compute_network.commit-network-infra.self_link
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
 
