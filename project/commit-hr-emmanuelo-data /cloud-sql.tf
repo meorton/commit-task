@@ -1,4 +1,5 @@
 module "cloudsql_commit" {
+  depends_on = [google_compute_network.commit_network-infra, google_compute_subnetwork.commit_subnet-infra]
   for_each         = var.cloudsql_instance
   source                  = "git::ssh://git@github.com/meorton/commit-task/tree/779f0c059880592c49a2481ea4b880fb6cd17603/project/cloud-sql-module"
   project_id              = var.project_id
