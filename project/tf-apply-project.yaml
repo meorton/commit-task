@@ -5,7 +5,7 @@ steps:
   args: 
   - '-c'
   - |
-          cd project/${_ENV} 
+          cd "project/${_ENV} "
           ls -al
           env=${dir%*/}
           env=${_ENV}
@@ -33,7 +33,7 @@ steps:
   - '-c'
   - | 
       if [[ "$BRANCH_NAME" == "main" ]]; then
-        cd project/${_ENV}   
+        cd "project/${_ENV} "   
         terraform apply -auto-approve
       else
         echo "***************************** SKIPPING APPLYING *******************************"
