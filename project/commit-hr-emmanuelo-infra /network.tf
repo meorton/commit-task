@@ -56,3 +56,40 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
   depends_on = [google_compute_global_address.private_ip_range]
 }
+
+
+
+#elastic ip
+resource "google_compute_address" "commit-infra-nat-address" {
+  project  = var.project_id
+  depends_on = [ google_compute_subnetwork.commit-infra-subnet ]
+  count  = 2
+  name   = "commit-infra-nat-manual-ip-${count.index}"
+  region = google_compute_subnetwork.commit-infra-subnet.region
+}
+
+resource "google_compute_router" "commit-infra-router" {
+  depends_on = [ google_compute_network.commit-network-infra ]
+  project  = var.project_id
+  name    = "commit-infra-nat-router"
+  network = google_compute_network.commit-network-infra.name
+  region  = "northamerica-northeast1"
+}
+
+## Create Nat Gateway
+
+resource "google_compute_router_nat" "commit-infra-nat" {
+  depends_on = [ google_compute_address.commit-infra-nat-address ]
+  project  = var.project_id
+  name                               = "commit-infra-nat"
+  router                             = google_compute_router.commit-infra-router.name
+  region                             = "northamerica-northeast1"
+  nat_ip_allocate_option = "MANUAL_ONLY"
+  nat_ips                = google_compute_address.commit-infra-nat-address.*.self_link
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+
+  log_config {
+    enable = true
+    filter = "ERRORS_ONLY"
+  }
+}
