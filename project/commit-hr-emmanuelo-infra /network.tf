@@ -2,7 +2,7 @@
 resource "google_compute_network" "commit-network-infra" {
   auto_create_subnetworks = false
   project                 = var.project_id
-  name                    = "tbm-shopfront-vpc"
+  name                    = "commit-network-infra"
 }
 
 #create subnet
