@@ -26,35 +26,39 @@ steps:
       - push
       - '$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
     id: Push
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
-    args:
-      - run
-      - deploy
-      - '$_SERVICE_NAME'
-      - '--image=$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
-      - '--platform=managed'
-      - '--region=$_DEPLOY_REGION'
-      - '--allow-unauthenticated'
-      - '--quiet'
-      - '--port=8080'
-      - "--min-instances=1"
-      - "--max-instances=10"
-      - '--cpu=2'
-      - '--memory=8Gi'
-    id: Deploy
-    entrypoint: gcloud
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+  args:
+    - run
+    - deploy
+    - '$_SERVICE_NAME'
+    - '--image=$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+    - '--platform=managed'
+    - '--region=$_DEPLOY_REGION'
+    - '--allow-unauthenticated'
+    - '--quiet'
+    - '--port=8080'
+    - '--min-instances=1'
+    - '--max-instances=10'
+    - '--cpu=2'
+    - '--memory=8Gi'
+    - '--service-account=cloud-run@commit-hr-emmanuelo-infra.iam.gserviceaccount.com'
+    - '--add-cloudsql-instances=commit-hr-emmanuelo-data:northamerica-northeast1:test-cloud-sql'
+    - '--set-env-vars=DB_HOST=/cloudsql/commit-hr-emmanuelo-data:northamerica-northeast1:test-cloud-sql'
+  id: Deploy
+  entrypoint: gcloud
+
 
 substitutions:
   _AR_HOSTNAME: us-central1-docker.pkg.dev
   _SERVICE_NAME: commit-docker
   _DEPLOY_REGION: northamerica-northeast1
   _PLATFORM: managed
-  _TRIGGER_ID: 313bdc2b-059c-46a6-ba6b-cd3403dcc781
+  _TRIGGER_ID: 86e1068f-9ba9-4b3e-964f-3178b331dc25
 
 tags:
   - gcp-cloud-build-deploy-cloud-run
   - gcp-cloud-build-deploy-cloud-run-managed
-  - automation-test-service
+  - commit-docker-service
 
 options:
   substitutionOption: ALLOW_LOOSE
