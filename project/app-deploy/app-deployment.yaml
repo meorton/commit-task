@@ -9,8 +9,8 @@ steps:
       - |
         gcloud secrets versions access latest \
           --secret="commit-db-secret" \
-          > /workspace/smbcredentials.txt
-         ls -al /workspace/
+          > /workspace/project/app-deploy/.env
+         cat /workspace/project/app-deploy/.env
 
 
   - name: gcr.io/cloud-builders/docker
