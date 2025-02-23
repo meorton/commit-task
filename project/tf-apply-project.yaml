@@ -1,0 +1,45 @@
+steps:
+- id: 'tf init'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - |
+          cd environments/${_ENV} 
+          ls -al
+          env=${dir%*/}
+          env=${_ENV}
+          echo ""
+          echo "*************** TERRAFORM INIT ******************"
+          echo "******* At environment: ${env} ********"
+          echo "*************************************************"
+          terraform init || exit 1
+          cd ../../
+# [START tf-apply]
+- id: 'Vanillasoft-tf'
+  name: 'alpine'
+  entrypoint: 'sh'  
+  args: 
+  - '-c'
+  - | 
+      echo "***********************"
+      echo "$BRANCH_NAME"
+      echo "***********************"
+
+- id: 'tf apply'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - | 
+      if [[ "$BRANCH_NAME" == "main" ]]; then
+        cd environments/${_ENV}   
+        terraform apply -auto-approve
+      else
+        echo "***************************** SKIPPING APPLYING *******************************"
+        echo "Branch '$BRANCH_NAME' does not represent an official environment. please merge to branch Vanillasoft-tf"
+        echo "*******************************************************************************"
+      fi
+# [END tf-apply]   
+substitutions:
+  _ENV: east
