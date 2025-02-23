@@ -1,12 +1,13 @@
 module "cloudsql_commit" {
   depends_on = [google_compute_network.commit-network-infra, google_compute_subnetwork.commit-subnet-infra]
   for_each         = var.cloudsql_instance
-  source                  = "git::ssh://git@github.com/meorton/commit-task/tree/779f0c059880592c49a2481ea4b880fb6cd17603/project/cloud-sql-module"
+  source                  = "git::ssh://git@github.com/meorton/cloud-sql-module.git?ref=v1.4.0"
   project_id              = var.project_id
   db_server_name          = "test-cloud-sql"
   db_name                 = "test-cloud-sql"
   db_version              = "POSTGRES_14"
   private_network         = google_compute_network.network.self_link 
+  region                  = "us-central1"
   backup_start_time       = "06:00"
   maintenance_window_hour = "8"
   maintenance_window_day  = "6"
