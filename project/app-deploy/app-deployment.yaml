@@ -13,14 +13,18 @@ steps:
          cat /workspace/project/app-deploy/.env
 
 
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - build
-      - '--no-cache'
-      - '-t'
-      - '$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
-      - .
-    id: Build
+- name: gcr.io/cloud-builders/docker
+  args:
+    - build
+    - '--no-cache'
+    - '-t'
+    - '$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+    - '-f'
+    - '/workspace/project/app-deploy/Dockerfile'
+    - '/workspace/project/app-deploy'
+  id: Build
+
+  
   - name: gcr.io/cloud-builders/docker
     args:
       - push
