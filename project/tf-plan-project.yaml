@@ -25,6 +25,7 @@ steps:
           echo "*************************************************"
           terraform init || exit 1
           cd ../../
+          cat "project/${_ENV} /backend.tf"
         
 
 # [START tf-plan]
