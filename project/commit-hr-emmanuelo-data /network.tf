@@ -1,9 +1,11 @@
+#create vpc
 resource "google_compute_network" "commit-network-data" {
   auto_create_subnetworks = false
   project                 = var.project_id
   name                    = "tbm-shopfront-vpc"
 }
 
+#create subnet
 resource "google_compute_subnetwork" "commit-subnet-data" {
   depends_on = [google_compute_network.commit-network-data]
   project                 = var.project_id
@@ -24,4 +26,34 @@ resource "google_compute_subnetwork" "commit-subnet-data" {
      }
 
   
+}
+
+
+# Enable the Service Networking API
+resource "google_project_service" "servicenetworking" {
+  service = "servicenetworking.googleapis.com"
+  project = var.project_id
+}
+
+# Reserve a global internal IP range for Private Services Access
+resource "google_compute_global_address" "private_ip_range" {
+  name          = "private-services-${var.project_id}"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = google_compute_network.commit-network-data.self_link 
+  project       = var.project_id
+
+  depends_on = [google_project_service.servicenetworking]
+}
+
+
+# Create the VPC peering connection with the Service Networking API
+resource "google_service_networking_connection" "private_vpc_connection" {
+  network                 = google_compute_network.commit-network-data.self_link
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_range.name]
+  project                 = var.project_id
+
+  depends_on = [google_compute_global_address.private_ip_range]
 }
