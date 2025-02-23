@@ -6,7 +6,7 @@ module "cloudsql_commit" {
   db_server_name          = "test-cloud-sql"
   db_name                 = "test-cloud-sql"
   db_version              = "POSTGRES_14"
-  private_network         = google_compute_network.network.self_link 
+  private_network         = google_compute_network.commit-network-data.self_link 
   region                  = "us-central1"
   backup_start_time       = "06:00"
   maintenance_window_hour = "8"
