@@ -62,10 +62,9 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 #elastic ip
 resource "google_compute_address" "commit-infra-nat-address" {
   project  = var.project_id
-  depends_on = [ google_compute_subnetwork.commit-infra-subnet ]
-  count  = 2
-  name   = "commit-infra-nat-manual-ip-${count.index}"
-  region = google_compute_subnetwork.commit-infra-subnet.region
+  depends_on = [ google_compute_subnetwork.commit-subnet-infra ]
+  name   = "commit-infra-nat-manual-ip"
+  region = google_compute_subnetwork.commit-subnet-infra.region
 }
 
 resource "google_compute_router" "commit-infra-router" {
