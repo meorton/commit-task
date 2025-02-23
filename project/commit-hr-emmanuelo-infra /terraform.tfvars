@@ -1,0 +1,5 @@
+env = "central"
+project_id = "commit-hr-emmanuelo-infra"
+project_name = "commit-hr-emmanuelo-infra"
+project_number = "commit-hr-emmanuelo-infra"
+region = "us-central1"
