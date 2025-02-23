@@ -1,0 +1,61 @@
+steps:
+
+  # Step 1: Fetch the secret from Secret Manager and write it to /workspace/.smbcredentials
+  - name: gcr.io/cloud-builders/gcloud
+    id: FetchSecret
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud secrets versions access latest \
+          --secret="commit-db-secret" \
+          > /workspace/smbcredentials.txt
+         ls -al /workspace/
+
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '--no-cache'
+      - '-t'
+      - '$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - .
+    id: Build
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - '$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+    id: Push
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - run
+      - deploy
+      - '$_SERVICE_NAME'
+      - '--image=$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--platform=managed'
+      - '--region=$_DEPLOY_REGION'
+      - '--allow-unauthenticated'
+      - '--quiet'
+      - '--port=8080'
+      - "--min-instances=1"
+      - "--max-instances=10"
+      - '--cpu=2'
+      - '--memory=8Gi'
+    id: Deploy
+    entrypoint: gcloud
+
+substitutions:
+  _AR_HOSTNAME: us-central1-docker.pkg.dev
+  _SERVICE_NAME: commit-docker
+  _DEPLOY_REGION: northamerica-northeast1
+  _PLATFORM: managed
+  _TRIGGER_ID: 313bdc2b-059c-46a6-ba6b-cd3403dcc781
+
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - automation-test-service
+
+options:
+  substitutionOption: ALLOW_LOOSE
+  logging: CLOUD_LOGGING_ONLY
