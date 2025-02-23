@@ -1,5 +1,5 @@
 steps:
-- id: 'Vanillasoft-tf'
+- id: 'commit-tf'
   name: 'alpine'
   entrypoint: 'sh'  
   args: 
