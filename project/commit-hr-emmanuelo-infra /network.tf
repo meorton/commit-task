@@ -11,18 +11,18 @@ resource "google_compute_subnetwork" "commit-subnet-infra" {
   project                 = var.project_id
   private_ip_google_access   = true
   name          = "commit-subnet-infrawork"
-  ip_cidr_range = "100.120.215.0/28"#"100.120.214.24/29"
+  ip_cidr_range = "10.0.0.0/16"#"100.120.214.24/29"
   region        = "northamerica-northeast1"
   network       = google_compute_network.commit-network-infra.id
   secondary_ip_range {
     
     range_name    = "commit-subnet-infraip"
-    ip_cidr_range = "10.16.1.0/14"
+    ip_cidr_range = "10.1.0.0/20"
  }
 
      secondary_ip_range {
     range_name    = "commit-subnet-infrawork-secondaryip"
-    ip_cidr_range = "10.32.1.0/16"
+    ip_cidr_range = "10.2.0.0/20"
      }
 
   
