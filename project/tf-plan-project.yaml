@@ -45,4 +45,6 @@ steps:
           cd ../../ 
 # [END tf-plan]
 substitutions:
-  _ENV: east
+  _ENV: temp
+options:
+  logging: CLOUD_LOGGING_ONLY
