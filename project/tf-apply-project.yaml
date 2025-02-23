@@ -42,4 +42,6 @@ steps:
       fi
 # [END tf-apply]   
 substitutions:
-  _ENV: east
+  _ENV: temp
+options:
+  logging: CLOUD_LOGGING_ONLY
