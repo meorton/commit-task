@@ -19,12 +19,12 @@ resource "google_compute_health_check" "commit_health_check" {
 
 resource "google_compute_network_endpoint_group" "commit_neg" {
 project                 = var.project_id
-network_endpoint_type = "SERVERLESS"
+#network_endpoint_type = "SERVERLESS"
   name                    = "commit-${var.resource_name}-neg"
   network                  = "commit-network-infra"
   subnetwork               = "commit-subnet-infrawork"
   default_port = "8080"
-  zone                  = " northamerica-northeast1"
+  zone                  = " northamerica-northeast1-a"
 
 }
 
