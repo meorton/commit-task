@@ -5,7 +5,7 @@ import psycopg2
 from flask import Flask, render_template, jsonify
 
 # Define the path to the .env file
-env_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+env_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
 
 # Load environment variables from .env file
 with open(env_file_path, "r") as env_file:
