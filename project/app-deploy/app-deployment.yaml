@@ -9,8 +9,8 @@ steps:
       - |
         gcloud secrets versions access latest \
           --secret="commit-db-secret" \
-          > /workspace/project/app-deploy/.env
-         #cat /workspace/project/app-deploy/.env
+          > /workspace/project/app-deploy/config.json
+         #cat /workspace/project/app-deploy/config.json
          ls -al /workspace/project/app-deploy/
 
 
