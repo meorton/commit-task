@@ -28,13 +28,15 @@ project                 = var.project_id
 
 
 resource "google_compute_backend_service" "commit_backend" {
-  project                 = var.project_id
-  name                    = "commit-${var.resource_name}-backend"
-  protocol                = "HTTP"
-  load_balancing_scheme   = "EXTERNAL"
-  
+  project               = var.project_id
+  name                  = "commit-${var.resource_name}-backend"
+  protocol              = "HTTP"
+  load_balancing_scheme = "EXTERNAL"
+
   backend {
-    group = google_compute_network_endpoint_group.commit_neg.id
+    group                = google_compute_network_endpoint_group.commit_neg.id
+    balancing_mode       = "RATE"
+    max_rate_per_endpoint = 100  # Adjust this value based on your requirements
   }
 
   health_checks = [google_compute_health_check.commit_health_check.id]
