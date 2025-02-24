@@ -49,7 +49,7 @@ steps:
       - '--service-account=cloud-run@commit-hr-emmanuelo-infra.iam.gserviceaccount.com'
       - '--add-cloudsql-instances=commit-hr-emmanuelo-data:northamerica-northeast1:test-cloud-sql'
       - '--set-env-vars=DB_HOST=/cloudsql/commit-hr-emmanuelo-data:northamerica-northeast1:test-cloud-sql'
-      #- '--vpc-connector=commit-network-infra'  # Add this line to specify the VPC connector
+      - '--vpc-connector=commit-it'  # Add this line to specify the VPC connector
     id: Deploy
     entrypoint: gcloud
 
