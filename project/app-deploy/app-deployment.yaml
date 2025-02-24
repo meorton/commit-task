@@ -39,7 +39,9 @@ steps:
       - '--image=$_AR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
       - '--platform=managed'
       - '--region=$_DEPLOY_REGION'
-      - '--allow-unauthenticated'
+      #- '--allow-unauthenticated'
+      - '--no-allow-unauthenticated'  # Restrict public access
+      - '--ingress=internal' 
       - '--quiet'
       - '--port=8080'
       - '--min-instances=1'
