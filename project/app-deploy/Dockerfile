@@ -12,6 +12,8 @@ ADD .env /app/
 RUN mkdir -p /app/templates
 ADD templates /app/templates
 
+RUN ls -al /app/
+
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
