@@ -1,11 +1,9 @@
 
 # Static IP Address for the Load Balancer
 resource "google_compute_global_address" "commit_ip" {
-  name = "commit-${var.resource_name}-ip"
+  name           = "commit-${var.resource_name}-ip"
+  address_type   = "EXTERNAL"
 }
-
-
-
 
 # Health Check for Backend Service (for monitoring health of Cloud Run service)
 resource "google_compute_health_check" "commit_health_check" {
