@@ -29,41 +29,41 @@ resource "google_compute_health_check" "commit_health_check" {
 #}
 
 
-resource "google_compute_backend_service" "commit_backend" {
-  project               = var.project_id
-  name                  = "commit-${var.resource_name}-backend"
-  protocol              = "HTTP"
-  load_balancing_scheme = "EXTERNAL"
+# resource "google_compute_backend_service" "commit_backend" {
+#   project               = var.project_id
+#   name                  = "commit-${var.resource_name}-backend"
+#   protocol              = "HTTP"
+#   load_balancing_scheme = "EXTERNAL"
 
-  backend {
-    group                = "projects/commit-hr-emmanuelo-infra/region/northamerica-northeast1/networkEndpointGroups/commit-commit-docker-neg"
-    balancing_mode       = "RATE"
-    max_rate_per_endpoint = 100  # Adjust this value based on your requirements
-  }
+#   backend {
+#     group                = "projects/commit-hr-emmanuelo-infra/region/northamerica-northeast1/networkEndpointGroups/commit-commit-docker-neg"
+#     balancing_mode       = "RATE"
+#     max_rate_per_endpoint = 100  # Adjust this value based on your requirements
+#   }
 
-  health_checks = [google_compute_health_check.commit_health_check.id]
-}
+#   health_checks = [google_compute_health_check.commit_health_check.id]
+# }
 
-# URL Map (for routing traffic to Cloud Run service)
-resource "google_compute_url_map" "commit_url_map" {
- project                 = var.project_id
-  name = "commit-${var.resource_name}-url-map"
+# # URL Map (for routing traffic to Cloud Run service)
+# resource "google_compute_url_map" "commit_url_map" {
+#  project                 = var.project_id
+#   name = "commit-${var.resource_name}-url-map"
 
-  default_service = google_compute_backend_service.commit_backend.id
-}
+#   default_service = google_compute_backend_service.commit_backend.id
+# }
 
-# HTTP Proxy (to handle HTTP requests)
-resource "google_compute_target_http_proxy" "commit_http_proxy" {
-  project                 = var.project_id
-  name    = "commit-${var.resource_name}-http-proxy"
-  url_map = google_compute_url_map.commit_url_map.id
-}
+# # HTTP Proxy (to handle HTTP requests)
+# resource "google_compute_target_http_proxy" "commit_http_proxy" {
+#   project                 = var.project_id
+#   name    = "commit-${var.resource_name}-http-proxy"
+#   url_map = google_compute_url_map.commit_url_map.id
+# }
 
-# Global Forwarding Rule (to forward traffic to Cloud Run service)
-resource "google_compute_global_forwarding_rule" "commit_forwarding_rule" {
-  project                 = var.project_id
-  name       = "commit-${var.resource_name}-forwarding-rule"
-  ip_address = google_compute_global_address.commit_ip.address
-  target     = google_compute_target_http_proxy.commit_http_proxy.id
-  port_range = "8080"
-}
+# # Global Forwarding Rule (to forward traffic to Cloud Run service)
+# resource "google_compute_global_forwarding_rule" "commit_forwarding_rule" {
+#   project                 = var.project_id
+#   name       = "commit-${var.resource_name}-forwarding-rule"
+#   ip_address = google_compute_global_address.commit_ip.address
+#   target     = google_compute_target_http_proxy.commit_http_proxy.id
+#   port_range = "8080"
+# }
