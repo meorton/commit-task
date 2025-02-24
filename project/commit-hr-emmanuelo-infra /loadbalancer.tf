@@ -16,15 +16,27 @@ resource "google_compute_health_check" "commit_health_check" {
   }
 }
 
-# Backend Service for Internal Load Balancer (using Cloud Run)
+
+resource "google_compute_network_endpoint_group" "commit_neg" {
+project                 = var.project_id
+  name                    = "commit-${var.resource_name}-neg"
+  network                  = "commit-network-infra"
+  subnetwork               = "commit-subnet-infrawork"
+  cloud_run {
+    service = "commit-docker"  # Name of your Cloud Run service
+    region  = "northamerica-northeast1"
+  }
+}
+
+
 resource "google_compute_backend_service" "commit_backend" {
   project                 = var.project_id
-  name                  = "commit-${var.resource_name}-backend"
-  protocol              = "HTTP"
-  load_balancing_scheme = "EXTERNAL"
-
+  name                    = "commit-${var.resource_name}-backend"
+  protocol                = "HTTP"
+  load_balancing_scheme   = "EXTERNAL"
+  
   backend {
-    group = "projects/commit-hr-emmanuelo-infra/locations/northamerica-northeast1/connectors/commit-it"
+    group = google_compute_network_endpoint_group.commit_neg.id
   }
 
   health_checks = [google_compute_health_check.commit_health_check.id]
@@ -51,5 +63,5 @@ resource "google_compute_global_forwarding_rule" "commit_forwarding_rule" {
   name       = "commit-${var.resource_name}-forwarding-rule"
   ip_address = google_compute_global_address.commit_ip.address
   target     = google_compute_target_http_proxy.commit_http_proxy.id
-  port_range = "80"
+  port_range = "8080"
 }
