@@ -1,20 +1,11 @@
-import socket
 import os
 import json
 from flask import Flask, render_template, jsonify
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, Table, Column, Integer, String, MetaData
 from sqlalchemy.orm import sessionmaker
 
-# Log the Cloud Run IP address
-def get_ip():
-    return socket.gethostbyname(socket.gethostname())
-
-print("Cloud Run IP Address:", get_ip())
-
-# Define the path to the .env file
+# Load environment variables from config.json
 env_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
-
-# Load environment variables from .env file
 with open(env_file_path, "r") as env_file:
     env_vars = json.load(env_file)
 
@@ -25,12 +16,42 @@ DB_PASSWORD = env_vars["DB_PASSWORD"]
 
 app = Flask(__name__)
 
-# SQLAlchemy engine configuration with explicit port
-DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?host={DB_HOST}&port=5432"
-
-# Create the engine and session factory
+# SQLAlchemy engine configuration
+DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
+metadata = MetaData()
+
+# Define the user_activities table schema
+user_activities = Table(
+    'user_activities', metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('user_id', Integer),
+    Column('activity', String),
+    Column('timestamp', String)  # Adjust the type as per your requirements
+)
+
+# Function to create the table if it doesn't exist
+def create_table_if_not_exists():
+    if not engine.dialect.has_table(engine, 'user_activities'):
+        metadata.create_all(engine)
+        print("Created 'user_activities' table.")
+        insert_sample_data()
+    else:
+        print("'user_activities' table already exists.")
+
+# Function to insert sample data
+def insert_sample_data():
+    session = Session()
+    sample_data = [
+        {'user_id': 1, 'activity': 'Logged in', 'timestamp': '2025-02-24 13:25:17'},
+        {'user_id': 2, 'activity': 'Viewed dashboard', 'timestamp': '2025-02-24 13:30:00'},
+        # Add more sample records as needed
+    ]
+    session.execute(user_activities.insert(), sample_data)
+    session.commit()
+    session.close()
+    print("Inserted sample data into 'user_activities' table.")
 
 @app.route("/")
 def index():
@@ -40,12 +61,11 @@ def index():
         query = text("SELECT user_id, activity, timestamp FROM user_activities ORDER BY timestamp DESC LIMIT 10;")
         result = session.execute(query)
         activities = result.fetchall()
-        session.close()
-
         return render_template("index.html", activities=activities)
     except Exception as e:
-        session.close()
         return f"Error fetching data: {e}", 500
+    finally:
+        session.close()
 
 @app.route("/api/activities")
 def get_activities():
@@ -55,25 +75,25 @@ def get_activities():
         query = text("SELECT user_id, activity, timestamp FROM user_activities ORDER BY timestamp DESC LIMIT 10;")
         result = session.execute(query)
         activities = result.fetchall()
-        session.close()
-
         return jsonify([{"user_id": row[0], "activity": row[1], "timestamp": row[2]} for row in activities])
     except Exception as e:
-        session.close()
         return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
 
 @app.route("/test-connection")
 def test_connection():
     """Simple test to check if database connection is working."""
     session = Session()
     try:
-        query = text("SELECT 1;")
-        session.execute(query)
-        session.close()
+        session.execute(text("SELECT 1;"))
         return "Connection to the database is successful!"
     except Exception as e:
-        session.close()
         return f"Error: {e}", 500
+    finally:
+        session.close()
 
 if __name__ == "__main__":
+    # Ensure the table exists before starting the app
+    create_table_if_not_exists()
     app.run(host="0.0.0.0", port=8080)
