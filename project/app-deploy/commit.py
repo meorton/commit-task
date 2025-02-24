@@ -1,4 +1,3 @@
-
 import os
 import json
 import psycopg2
@@ -11,7 +10,8 @@ env_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config
 with open(env_file_path, "r") as env_file:
     env_vars = json.load(env_file)
 
-DB_HOST = env_vars["DB_HOST"]
+# Use Cloud SQL socket for DB_HOST
+DB_HOST = env_vars["DB_HOST"]  # This should be something like /cloudsql/your-instance-connection-name
 DB_NAME = env_vars["DB_NAME"]
 DB_USER = env_vars["DB_USER"]
 DB_PASSWORD = env_vars["DB_PASSWORD"]
@@ -25,7 +25,8 @@ def get_db_connection():
             dbname=DB_NAME,
             user=DB_USER,
             password=DB_PASSWORD,
-            host=DB_HOST
+            host=DB_HOST,
+            port=5432  # Explicitly use the PostgreSQL port
         )
         return conn
     except Exception as e:
