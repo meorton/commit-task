@@ -24,7 +24,7 @@ network_endpoint_type = "SERVERLESS"
   network                  = "commit-network-infra"
   subnetwork               = "commit-subnet-infrawork"
   default_port = "8080"
-   zone =  "northamerica-northeast1-a"
+   region                  = "northamerica-northeast1"
 }
 
 
