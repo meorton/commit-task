@@ -62,5 +62,18 @@ def get_activities():
         session.close()
         return jsonify({"error": str(e)}), 500
 
+@app.route("/test-connection")
+def test_connection():
+    """Simple test to check if database connection is working."""
+    session = Session()
+    try:
+        query = text("SELECT 1;")
+        session.execute(query)
+        session.close()
+        return "Connection to the database is successful!"
+    except Exception as e:
+        session.close()
+        return f"Error: {e}", 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
