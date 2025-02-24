@@ -1,6 +1,7 @@
 
 # Static IP Address for the Load Balancer
 resource "google_compute_global_address" "commit_ip" {
+ project                 = var.project_id
   name           = "commit-${var.resource_name}-ip"
   address_type   = "EXTERNAL"
 }
@@ -31,6 +32,7 @@ resource "google_compute_backend_service" "commit_backend" {
 
 # URL Map (for routing traffic to Cloud Run service)
 resource "google_compute_url_map" "commit_url_map" {
+ project                 = var.project_id
   name = "commit-${var.resource_name}-url-map"
 
   default_service = google_compute_backend_service.commit_backend.id
