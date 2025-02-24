@@ -8,7 +8,7 @@ WORKDIR /app
 # Copy the Python script and requirements.txt into the container's /app directory
 ADD commit.py /app/
 ADD requirements.txt /app/
-ADD .env /app/
+ADD config.json /app/
 RUN mkdir -p /app/templates
 ADD templates /app/templates
 
