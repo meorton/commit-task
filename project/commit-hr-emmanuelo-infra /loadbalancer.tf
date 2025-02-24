@@ -24,7 +24,7 @@ resource "google_compute_backend_service" "commit_backend" {
   load_balancing_scheme = "EXTERNAL"
 
   backend {
-    group = "https://commit-docker-511112496376.northamerica-northeast1.run.app"
+    group = "vpc_connector_id = "projects/commit-hr-emmanuelo-infra/locations/northamerica-northeast1/connectors/commit-it"
   }
 
   health_checks = [google_compute_health_check.commit_health_check.id]
