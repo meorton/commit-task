@@ -17,16 +17,16 @@ resource "google_compute_health_check" "commit_health_check" {
 }
 
 
-resource "google_compute_network_endpoint_group" "commit_neg" {
-project                 = var.project_id
+#resource "google_compute_network_endpoint_group" "commit_neg" {
+#project                 = var.project_id
 #network_endpoint_type = "SERVERLESS"
-  name                    = "commit-${var.resource_name}-neg"
-  network                  = "commit-network-infra"
-  subnetwork               = "commit-subnet-infrawork"
-  default_port = "8080"
-  zone                  = " northamerica-northeast1-a"
+ # name                    = "commit-${var.resource_name}-neg"
+  #network                  = "commit-network-infra"
+  #subnetwork               = "commit-subnet-infrawork"
+  #default_port = "8080"
+  #zone                  = " northamerica-northeast1-a"
 
-}
+#}
 
 
 resource "google_compute_backend_service" "commit_backend" {
@@ -36,7 +36,7 @@ resource "google_compute_backend_service" "commit_backend" {
   load_balancing_scheme = "EXTERNAL"
 
   backend {
-    group                = google_compute_network_endpoint_group.commit_neg.id
+    group                = "projects/commit-hr-emmanuelo-infra/region/northamerica-northeast1/networkEndpointGroups/commit-commit-docker-neg"
     balancing_mode       = "RATE"
     max_rate_per_endpoint = 100  # Adjust this value based on your requirements
   }
