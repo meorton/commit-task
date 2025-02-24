@@ -25,8 +25,8 @@ DB_PASSWORD = env_vars["DB_PASSWORD"]
 
 app = Flask(__name__)
 
-# SQLAlchemy engine configuration
-DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?host={DB_HOST}"
+# SQLAlchemy engine configuration with explicit port
+DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?host={DB_HOST}&port=5432"
 
 # Create the engine and session factory
 engine = create_engine(DATABASE_URL)
