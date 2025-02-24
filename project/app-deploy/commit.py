@@ -2,7 +2,7 @@ import socket
 import os
 import json
 from flask import Flask, render_template, jsonify
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 # Log the Cloud Run IP address
@@ -37,7 +37,8 @@ def index():
     """Fetches user activity data and displays it."""
     session = Session()
     try:
-        result = session.execute("SELECT user_id, activity, timestamp FROM user_activities ORDER BY timestamp DESC LIMIT 10;")
+        query = text("SELECT user_id, activity, timestamp FROM user_activities ORDER BY timestamp DESC LIMIT 10;")
+        result = session.execute(query)
         activities = result.fetchall()
         session.close()
 
@@ -51,7 +52,8 @@ def get_activities():
     """Returns user activity data as JSON."""
     session = Session()
     try:
-        result = session.execute("SELECT user_id, activity, timestamp FROM user_activities ORDER BY timestamp DESC LIMIT 10;")
+        query = text("SELECT user_id, activity, timestamp FROM user_activities ORDER BY timestamp DESC LIMIT 10;")
+        result = session.execute(query)
         activities = result.fetchall()
         session.close()
 
