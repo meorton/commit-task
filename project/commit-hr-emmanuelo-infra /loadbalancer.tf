@@ -4,14 +4,30 @@ resource "google_compute_global_address" "commit_ip" {
   name = "commit-${var.resource_name}-ip"
 }
 
-# Backend Service (HTTP) for Cloud Run
+
+
+
+# Health Check for Backend Service (for monitoring health of Cloud Run service)
+resource "google_compute_health_check" "commit_health_check" {
+  name               = "commit-${var.resource_name}-health-check"
+  http_health_check {
+    port = 8080
+    request_path = "/"
+  }
+}
+
+# Backend Service for Internal Load Balancer (using Cloud Run)
 resource "google_compute_backend_service" "commit_backend" {
-  name     = "commit-${var.resource_name}-backend"
-  protocol = "HTTP"
+  name                  = "commit-${var.resource_name}-backend"
+  protocol              = "HTTP"
+  load_balancing_scheme = "INTERNAL"
+  region                = "<REGION>"
 
   backend {
-    group = google_cloud_run_service.commit_docker_service.id
+    group = "https://commit-docker-511112496376.northamerica-northeast1.run.app"
   }
+
+  health_checks = [google_compute_health_check.commit_health_check.id]
 }
 
 # URL Map (for routing traffic to Cloud Run service)
