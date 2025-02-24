@@ -9,7 +9,8 @@ WORKDIR /app
 ADD commit.py /app/
 ADD requirements.txt /app/
 ADD .env /app/
-ADD templates /app/
+RUN mkdir -p /app/templates
+ADD templates /app/templates
 
 
 # Install Python dependencies
