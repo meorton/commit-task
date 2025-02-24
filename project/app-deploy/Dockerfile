@@ -9,6 +9,8 @@ WORKDIR /app
 ADD commit.py /app/
 ADD requirements.txt /app/
 ADD .env /app/
+ADD templates /app/
+
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
