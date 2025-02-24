@@ -20,7 +20,7 @@ resource "google_compute_health_check" "commit_health_check" {
 resource "google_compute_backend_service" "commit_backend" {
   name                  = "commit-${var.resource_name}-backend"
   protocol              = "HTTP"
-  load_balancing_scheme = "INTERNAL"
+  load_balancing_scheme = "EXTERNAL"
 
   backend {
     group = "https://commit-docker-511112496376.northamerica-northeast1.run.app"
