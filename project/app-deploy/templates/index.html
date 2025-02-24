@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Activities</title>
+</head>
+<body>
+    <h2>Recent User Activities</h2>
+    <table border="1">
+        <tr>
+            <th>User ID</th>
+            <th>Activity</th>
+            <th>Timestamp</th>
+        </tr>
+        {% for activity in activities %}
+        <tr>
+            <td>{{ activity[0] }}</td>
+            <td>{{ activity[1] }}</td>
+            <td>{{ activity[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
